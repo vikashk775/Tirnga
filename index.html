@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Lucky Game</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    body {
+      text-align: center;
+      font-family: Arial;
+      background: linear-gradient(to right, #000, #222);
+      color: white;
+    }
+
+    h1 { color: gold; }
+
+    .box {
+      margin-top: 20px;
+      padding: 20px;
+      border: 2px solid white;
+      display: inline-block;
+      border-radius: 10px;
+      width: 90%;
+      max-width: 400px;
+    }
+
+    button {
+      padding: 10px 15px;
+      margin: 5px;
+      font-size: 16px;
+      cursor: pointer;
+      border-radius: 5px;
+      border: none;
+    }
+
+    .big { background: green; color: white; }
+    .small { background: red; color: white; }
+
+    #number {
+      font-size: 45px;
+      margin: 20px;
+      color: yellow;
+    }
+  </style>
+</head>
+
+<body>
+
+<h1>🎰 Lucky Game</h1>
+
+<div class="box">
+  <h2>💰 Coins: <span id="coins">100</span></h2>
+
+  <p>Bet चुनें:</p>
+  <button onclick="setBet(10)">10</button>
+  <button onclick="setBet(50)">50</button>
+  <button onclick="setBet(100)">100</button>
+
+  <p>Option चुनें:</p>
+  <button class="big" onclick="play('big')">BIG</button>
+  <button class="small" onclick="play('small')">SMALL</button>
+  <br>
+  <button onclick="play('odd')">ODD</button>
+  <button onclick="play('even')">EVEN</button>
+
+  <div id="number">0</div>
+  <h3 id="result"></h3>
+</div>
+
+<script>
+let coins = localStorage.getItem("coins") ? parseInt(localStorage.getItem("coins")) : 100;
+let bet = 10;
+
+document.getElementById("coins").innerText = coins;
+
+function setBet(amount) {
+  bet = amount;
+}
+
+function play(choice) {
+
+  if (coins < bet) {
+    alert("Coins कम हैं!");
+    return;
+  }
+
+  let count = 0;
+
+  let interval = setInterval(() => {
+    document.getElementById("number").innerText =
+      Math.floor(Math.random() * 10) + 1;
+    count++;
+
+    if (count > 15) {
+      clearInterval(interval);
+
+      let number = Math.floor(Math.random() * 10) + 1;
+      document.getElementById("number").innerText = number;
+
+      let win = false;
+
+      if (choice === 'big' && number > 5) win = true;
+      if (choice === 'small' && number <= 5) win = true;
+      if (choice === 'odd' && number % 2 !== 0) win = true;
+      if (choice === 'even' && number % 2 === 0) win = true;
+
+      if (win) {
+        coins += bet;
+        document.getElementById("result").innerText = "🎉 जीत गए!";
+      } else {
+        coins -= bet;
+        document.getElementById("result").innerText = "😢 हार गए!";
+      }
+
+      localStorage.setItem("coins", coins);
+      document.getElementById("coins").innerText = coins;
+    }
+  }, 100);
+}
+</script>
+
+</body>
+</html>
